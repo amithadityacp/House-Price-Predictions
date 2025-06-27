@@ -11,4 +11,5 @@ House Price Predictions tool using the Django and machine learning
 1. Django
 2. pip install django
 3. django-admin startproject project_name
+4. python manage.py runserver
 
