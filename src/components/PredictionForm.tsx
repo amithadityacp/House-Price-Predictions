@@ -6,8 +6,6 @@ interface FormData {
   bathrooms: string;
   sqft_living: string;
   location: string;
-  yearBuilt: string;
-  lotSize: string;
 }
 
 const PredictionForm: React.FC = () => {
@@ -16,8 +14,6 @@ const PredictionForm: React.FC = () => {
     bathrooms: '',
     sqft_living: '',
     location: '',
-    yearBuilt: '',
-    lotSize: ''
   });
   
   const [prediction, setPrediction] = useState<number | null>(null);
@@ -37,24 +33,32 @@ const PredictionForm: React.FC = () => {
     const bedrooms = parseInt(formData.bedrooms) || 0;
     const bathrooms = parseFloat(formData.bathrooms) || 0;
     const sqft = parseInt(formData.sqft_living) || 0;
-    const yearBuilt = parseInt(formData.yearBuilt) || 2000;
-    const lotSize = parseInt(formData.lotSize) || 5000;
     
-    // Location multipliers
+    // Location multipliers for Indian cities/areas
     const locationMultipliers: { [key: string]: number } = {
-      'downtown': 1.5,
-      'suburbs': 1.2,
-      'rural': 0.9,
-      'waterfront': 1.8,
-      'mountain': 1.3
+      'mumbai': 2.5,
+      'delhi': 2.2,
+      'bangalore': 2.0,
+      'hyderabad': 1.8,
+      'chennai': 1.7,
+      'pune': 1.6,
+      'kolkata': 1.5,
+      'ahmedabad': 1.4,
+      'jaipur': 1.2,
+      'lucknow': 1.1,
+      'chandigarh': 1.3,
+      'kochi': 1.4,
+      'indore': 1.0,
+      'bhopal': 0.9,
+      'tier2': 0.8,
+      'tier3': 0.6
     };
     
     const locationMultiplier = locationMultipliers[formData.location] || 1.0;
-    const ageMultiplier = Math.max(0.7, 1 - (2024 - yearBuilt) * 0.005);
     
-    // Base calculation with enhanced factors
-    let basePrice = (sqft * 150) + (bedrooms * 15000) + (bathrooms * 12000) + (lotSize * 5);
-    basePrice *= locationMultiplier * ageMultiplier;
+    // Base calculation for Indian market (prices in INR)
+    let basePrice = (sqft * 4000) + (bedrooms * 500000) + (bathrooms * 300000);
+    basePrice *= locationMultiplier;
     
     // Add some realistic variance
     const variance = 0.1;
@@ -79,8 +83,8 @@ const PredictionForm: React.FC = () => {
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
+      style: 'currency', 
+      currency: 'INR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price);
@@ -164,61 +168,44 @@ const PredictionForm: React.FC = () => {
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-white/90 font-medium mb-2">
-                  <MapPin className="w-4 h-4 inline mr-2" />
-                  Location Type
-                </label>
-                <select
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white input-focus focus:outline-none focus:border-white/60"
-                >
-                  <option value="">Select location</option>
-                  <option value="downtown">Downtown</option>
-                  <option value="suburbs">Suburbs</option>
-                  <option value="rural">Rural</option>
-                  <option value="waterfront">Waterfront</option>
-                  <option value="mountain">Mountain View</option>
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-white/90 font-medium mb-2">
-                  Year Built
-                </label>
-                <input
-                  type="number"
-                  name="yearBuilt"
-                  value={formData.yearBuilt}
-                  onChange={handleInputChange}
-                  min="1900"
-                  max="2024"
-                  required
-                  className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 input-focus focus:outline-none focus:border-white/60"
-                  placeholder="e.g., 2010"
-                />
-              </div>
-            </div>
-
-            <div>
+            <div className="md:col-span-2">
               <label className="block text-white/90 font-medium mb-2">
-                Lot Size (sq ft)
+                <MapPin className="w-4 h-4 inline mr-2" />
+                City/Location
               </label>
-              <input
-                type="number"
-                name="lotSize"
-                value={formData.lotSize}
+              <select
+                name="location"
+                value={formData.location}
                 onChange={handleInputChange}
-                min="1000"
-                max="50000"
                 required
-                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 input-focus focus:outline-none focus:border-white/60"
-                placeholder="e.g., 7500"
-              />
+                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white input-focus focus:outline-none focus:border-white/60"
+              >
+                <option value="">Select city/location</option>
+                <optgroup label="Metro Cities">
+                  <option value="mumbai">Mumbai</option>
+                  <option value="delhi">Delhi NCR</option>
+                  <option value="bangalore">Bangalore</option>
+                  <option value="hyderabad">Hyderabad</option>
+                  <option value="chennai">Chennai</option>
+                  <option value="kolkata">Kolkata</option>
+                </optgroup>
+                <optgroup label="Tier 1 Cities">
+                  <option value="pune">Pune</option>
+                  <option value="ahmedabad">Ahmedabad</option>
+                  <option value="jaipur">Jaipur</option>
+                  <option value="lucknow">Lucknow</option>
+                  <option value="chandigarh">Chandigarh</option>
+                  <option value="kochi">Kochi</option>
+                </optgroup>
+                <optgroup label="Other Cities">
+                  <option value="indore">Indore</option>
+                  <option value="bhopal">Bhopal</option>
+                  <option value="tier2">Other Tier 2 City</option>
+                  <option value="tier3">Tier 3 City/Town</option>
+                </optgroup>
+              </select>
             </div>
+          </div>
 
             <button
               type="submit"
