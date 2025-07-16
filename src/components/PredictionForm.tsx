@@ -313,17 +313,20 @@ const PredictionForm: React.FC = () => {
             <div className="md:col-span-2">
               <label className="block text-white/90 font-medium mb-2">
                 <MapPin className="w-4 h-4 inline mr-2" />
-                City/Location
+                City/Location (Select or Type)
               </label>
-              <select
+              <input
+                type="text"
                 name="location"
                 value={formData.location}
                 onChange={handleInputChange}
+                list="cities"
                 required
-                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white input-focus focus:outline-none focus:border-white/60"
-                style={{ color: 'white' }}
-              >
-                <option value="" style={{ color: '#1f2937', backgroundColor: 'white' }}>Select city/location</option>
+                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 input-focus focus:outline-none focus:border-white/60"
+                placeholder="Type city name or select from suggestions"
+              />
+              <datalist id="cities">
+                <option value="">Select city/location</option>
                 <optgroup label="Metro Cities">
                   <option value="mumbai" style={{ color: '#1f2937', backgroundColor: 'white' }}>Mumbai</option>
                   <option value="delhi" style={{ color: '#1f2937', backgroundColor: 'white' }}>Delhi NCR</option>
@@ -490,7 +493,7 @@ const PredictionForm: React.FC = () => {
                   <option value="tier3_central" style={{ color: '#1f2937', backgroundColor: 'white' }}>Central India - Tier 3</option>
                   <option value="tier3_northeast" style={{ color: '#1f2937', backgroundColor: 'white' }}>Northeast India - Tier 3</option>
                 </optgroup>
-              </select>
+              </datalist>
             </div>
           </div>
 
